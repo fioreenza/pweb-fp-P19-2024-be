@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import connectDB from "./database";
 import cors from "cors";
+import crowdfundRoutes from "./routes/crowdfundRoutes";
 
 const app = express();
 const PORT = 3001;
@@ -26,6 +27,9 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/crowdfunds", crowdfundRoutes);
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
