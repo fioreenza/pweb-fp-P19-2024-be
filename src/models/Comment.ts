@@ -1,11 +1,15 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export interface Comment extends Document {
-  message: string;
+export interface IComment extends Document {
+    user: string;
+    content: string;
+    crowdfundId: mongoose.Types.ObjectId;
 }
 
-const CommentSchema: Schema = new Schema({
-  message: { type: String, required: true },
+const commentSchema = new Schema<IComment>({
+    user: { type: String, required: true },
+    content: { type: String, required: true },
+    crowdfundId: { type: Schema.Types.ObjectId, ref: 'Crowdfund', required: true },
 });
 
-export default mongoose.model<Comment>('Comment', CommentSchema);
+export default mongoose.model<IComment>('Comment', commentSchema);
