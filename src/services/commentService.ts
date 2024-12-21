@@ -9,3 +9,12 @@ export const createCommentService = async (message: string) => {
     throw new Error('Failed to add comment');
   }
 };
+
+export const getAllCommentsService = async () => {
+  try {
+    const comments = await Comment.find();
+    return { success: true, data: comments };
+  } catch (error) {
+    throw new Error('Failed to fetch comments');
+  }
+};

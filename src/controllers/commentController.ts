@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createCommentService } from '../services/commentService';
+import { createCommentService, getAllCommentsService } from '../services/commentService';
 
 export const createComment = async (req: Request, res: Response) => {
   try {
@@ -11,6 +11,15 @@ export const createComment = async (req: Request, res: Response) => {
 
     const result = await createCommentService(message);
     res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as any).message });
+  }
+};
+
+export const getAllComments = async (req: Request, res: Response) => {
+  try {
+    const result = await getAllCommentsService();
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ success: false, message: (error as any).message });
   }

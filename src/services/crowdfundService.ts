@@ -7,6 +7,7 @@ interface CreateCrowdfundInput {
 
 export const getAllCrowdfundsService = async () => {
   try {
+    // Fetch all crowdfunds with OPEN status
     const crowdfunds = await Crowdfund.find({ status: CrowdfundStatus.OPEN });
     return { success: true, data: crowdfunds };
   } catch (error) {
@@ -14,9 +15,9 @@ export const getAllCrowdfundsService = async () => {
   }
 };
 
-
 export const createCrowdfundService = async (data: CreateCrowdfundInput) => {
   try {
+    // Create a new crowdfund
     const newCrowdfund = new Crowdfund({
       name: data.name,
       target: data.target,
@@ -24,8 +25,8 @@ export const createCrowdfundService = async (data: CreateCrowdfundInput) => {
       status: CrowdfundStatus.OPEN,
     });
 
+    // Save and return the new crowdfund
     const savedCrowdfund = await newCrowdfund.save();
-
     return { success: true, data: savedCrowdfund };
   } catch (error) {
     throw new Error('Failed to create crowdfund');
@@ -34,6 +35,7 @@ export const createCrowdfundService = async (data: CreateCrowdfundInput) => {
 
 export const getCrowdfundByIDService = async (id: string) => {
   try {
+    // Fetch a crowdfund by ID
     const crowdfund = await Crowdfund.findById(id);
     if (!crowdfund) {
       throw new Error('Crowdfund not found');
@@ -43,4 +45,4 @@ export const getCrowdfundByIDService = async (id: string) => {
   } catch (error) {
     throw new Error('Failed to fetch crowdfund');
   }
-}
+};
