@@ -4,6 +4,7 @@ import connectDB from "./database";
 import cors from "cors";
 import crowdfundRoutes from "./routes/crowdfundRoutes";
 import authRoutes from "./routes/authRoutes";
+import feedbackRoutes from './feedbackRoutes';
 
 const app = express();
 const PORT = 3001;
@@ -35,3 +36,9 @@ app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
 
+// Add the feedbackRoutes under /api
+app.use('/api', feedbackRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
