@@ -1,29 +1,21 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export enum CrowdfundStatus {
-  OPEN = 'OPEN',
-  CLOSE = 'CLOSE',
+export interface ICrowdfund extends Document {
+    name: string;
+    targetDonation: number;
+    currentDonation: number;
+    status: 'open' | 'close';
+    comments: mongoose.Types.ObjectId[];
+    createdBy: string;
 }
 
-export enum PaymentMethod {
-    QRIS = 'QRIS',
-    BANK_TRANSFER = 'BANK_TRANSFER'
-  }
-
-export interface Crowdfund extends Document {
-  name: string;
-  target: number;
-  current_donation: number;
-  status: CrowdfundStatus;
-  created_at: Date;
-}
-
-const CrowdfundSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  target: { type: Number, required: true },
-  current_donation: { type: Number, default: 0 },
-  status: { type: String, enum: Object.values(CrowdfundStatus), default: CrowdfundStatus.OPEN },
-  created_at: { type: Date, default: Date.now },
+const crowdfundSchema = new Schema<ICrowdfund>({
+    name: { type: String, required: true },
+    targetDonation: { type: Number, required: true },
+    currentDonation: { type: Number, default: 0 },
+    status: { type: String, enum: ['open', 'close'], default: 'open' },
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
+    createdBy: { type: String, required: true },
 });
 
-export default mongoose.model<Crowdfund>('Crowdfund', CrowdfundSchema);
+export default mongoose.model<ICrowdfund>('Crowdfund', crowdfundSchema);
