@@ -1,43 +1,26 @@
-import express from 'express';
-import { getAllCrowdfunds, createCrowdfund, getCrowdfundByID } from '../controllers/crowdfundController';
-import { createDonation } from '../controllers/donationController';
-import { createComment } from '../controllers/commentController';
-import { addFavoriteCrowdfund } from '../controllers/favoriteController';
-import { getFavoriteCrowdfunds, getAllFavorites } from '../controllers/favoriteController';
-
+const express = require('express');
 const router = express.Router();
+const crowdfundController = require('../controllers/crowdfundController');
 
-router.get('/', (req, res) => {
-    getAllCrowdfunds(req, res);
-}
-);
-router.post('/', (req, res) => {
-    createCrowdfund(req, res);
-}
-);
-router.get('/:id', (req, res) => {
-    getCrowdfundByID(req, res);
-}
-);
-router.post('/:id/donate', (req, res) => {
-    createDonation(req, res);
-}
-);
-router.post('/:id/comment', (req, res) => {
-    createComment(req, res);
-}
-);
-router.post('/:id/favorite', (req, res) => {
-    addFavoriteCrowdfund(req, res);
-}
-);
-router.get('/favorite/:user_id', (req, res) => {
-    getFavoriteCrowdfunds(req, res);
-}
-);
-router.get('/favorite', (req, res) => {
-    getAllFavorites(req, res);
-}
-);
+// Route untuk Admin Landing Page (Melihat semua Crowdfund)
+router.get('/', crowdfundController.getCrowdfunds);
 
-export default router;
+// Route untuk melihat Detail Crowdfund
+router.get('/:id', crowdfundController.getCrowdfundById);
+
+// Route untuk Edit Crowdfund
+router.put('/:id/edit', crowdfundController.updateCrowdfund);
+
+// Route untuk membuat Crowdfund baru
+router.post('/create', crowdfundController.createCrowdfund);
+
+// Route untuk menghapus Crowdfund
+router.delete('/:id', crowdfundController.deleteCrowdfund);
+
+// Route untuk menambahkan komentar pada crowdfund
+router.post('/:id/comments', crowdfundController.addComment);
+
+// Route untuk menghapus komentar pada crowdfund
+router.delete('/:id/comments/:commentId', crowdfundController.deleteComment);
+
+module.exports = router;
