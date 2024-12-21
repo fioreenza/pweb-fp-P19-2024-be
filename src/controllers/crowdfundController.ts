@@ -1,46 +1,72 @@
 import { Request, Response } from 'express';
-import { createCrowdfundService, getAllCrowdfundsService, getCrowdfundByIDService} from '../services/crowdfundService';
+import Crowdfund, { ICrowdfund } from '../models/Crowdfund';
+import Comment, { IComment } from '../models/Comment';
 
-// Get All Crowdfunds (only OPEN)
-export const getAllCrowdfunds = async (req: Request, res: Response) => {
-  try {
-    const result = await getAllCrowdfundsService();
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ success: false, message: (error as any).message });
-  }
+// Get all crowdfunds
+export const getAllCrowdfunds = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const crowdfunds: ICrowdfund[] = await Crowdfund.find();
+        res.status(200).json(crowdfunds);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
 };
 
-// Create a New Crowdfund
-export const createCrowdfund = async (req: Request, res: Response) => {
-  try {
-    const { name, target } = req.body;
-
-    // Validasi input
-    if (!name || typeof name !== 'string') {
-      return res.status(400).json({ success: false, message: 'Name is required and must be a string' });
+// Get crowdfund details
+export const getCrowdfund = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const crowdfund = await Crowdfund.findById(req.params.id).populate('comments');
+        if (!crowdfund) {
+            res.status(404).json({ message: 'Crowdfund not found' });
+            return;
+        }
+        res.status(200).json(crowdfund);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
     }
-
-    // target berupa string dan harus > 0
-    if (!target || target <= 0) {
-      return res.status(400).json({ success: false, message: 'Target is required and must be a number greater than 0' });
-    }
-
-    const result = await createCrowdfundService({ name, target });
-    res.status(201).json(result);
-  } catch (error) {
-    res.status(500).json({ success: false, message: (error as any).message });
-  }
 };
 
-// Get Crowdfund by ID
-export const getCrowdfundByID = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
+// Create new crowdfund
+export const createCrowdfund = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { name, targetDonation, createdBy } = req.body;
+        const newCrowdfund = new Crowdfund({ name, targetDonation, createdBy });
+        await newCrowdfund.save();
+        res.status(201).json(newCrowdfund);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
 
-    const result = await getCrowdfundByIDService(id);
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ success: false, message: (error as any).message });
-  }
+// Update crowdfund
+export const updateCrowdfund = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { name, targetDonation, status } = req.body;
+        const updatedCrowdfund = await Crowdfund.findByIdAndUpdate(
+            req.params.id,
+            { name, targetDonation, status },
+            { new: true }
+        );
+        if (!updatedCrowdfund) {
+            res.status(404).json({ message: 'Crowdfund not found' });
+            return;
+        }
+        res.status(200).json(updatedCrowdfund);
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
+};
+
+// Delete crowdfund
+export const deleteCrowdfund = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const deletedCrowdfund = await Crowdfund.findByIdAndDelete(req.params.id);
+        if (!deletedCrowdfund) {
+            res.status(404).json({ message: 'Crowdfund not found' });
+            return;
+        }
+        res.status(200).json({ message: 'Crowdfund deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: (error as Error).message });
+    }
 };
