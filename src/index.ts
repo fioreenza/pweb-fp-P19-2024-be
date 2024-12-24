@@ -31,12 +31,6 @@ app.get("/", (req, res) => {
 
 app.use("/crowdfunds", crowdfundRoutes);
 app.use('/auth', authRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
-
-// Add the feedbackRoutes under /api
 app.use('/api', feedbackRoutes);
 
 app.listen(PORT, () => {

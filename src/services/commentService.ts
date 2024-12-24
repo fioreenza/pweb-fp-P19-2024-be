@@ -1,20 +1,24 @@
-import Comment from '../models/Comment';
+import Comment from "../models/Comment";
 
-export const createCommentService = async (message: string) => {
+// createCommentService function to create a new comment
+export const createCommentService = async (crowdfund_id: string, message: string, user_id: string) => {
   try {
-    const newComment = new Comment({ message });
+    const newComment = new Comment({ crowdfund_id, message, user_id });
     await newComment.save();
-    return { success: true, message: 'Comment successfully added', data: newComment };
+    return { success: true, message: 'Comment successfully created', data: newComment };
   } catch (error) {
-    throw new Error('Failed to add comment');
+    console.error(error);
+    return { success: false, message: 'Failed to create comment' };
   }
 };
 
-export const getAllCommentsService = async () => {
+// get comment by crowdfund id
+export const getCommentByCrowdfundIdService = async (crowdfund_id: string) => {
   try {
-    const comments = await Comment.find();
+    const comments = await Comment.find({ crowdfund_id }).populate('user_id');
     return { success: true, data: comments };
   } catch (error) {
-    throw new Error('Failed to fetch comments');
+    console.error(error);
+    return { success: false, message: 'Failed to fetch comments' };
   }
 };

@@ -2,9 +2,9 @@ import express from 'express';
 import { getAllCrowdfunds, createCrowdfund, getCrowdfundByID } from '../controllers/crowdfundController';
 import { createDonation, getDonationByID, getDonationByUserID } from '../controllers/donationController';
 import { createComment } from '../controllers/commentController';
-import { addcreateFavorite } from '../controllers/favoriteController';
+import { addcreateFavorite, removeFavorite } from '../controllers/favoriteController';
 import { getFavoriteCrowdfunds } from '../controllers/favoriteController';
-import { getAllComments } from '../controllers/commentController';
+import { getCommentByCrowdfundId } from '../controllers/commentController';
 
 const router = express.Router();
 
@@ -28,10 +28,6 @@ router.post('/:id/comment', (req, res) => {
     createComment(req, res);
 }
 );
-router.get('/:id/comment', (req, res) => {
-    getAllComments(req, res);
-}
-);
 router.post('/:id/favorite', (req, res) => {
     addcreateFavorite(req, res);
 }
@@ -48,5 +44,12 @@ router.get('/donate/user/:user_id', (req, res) => {
     getDonationByUserID(req, res);
 }
 );
-
+router.delete('/:id/favorite', (req, res) => {
+    removeFavorite(req, res);
+}
+);
+router.get('/comment/:crowdfund_id', (req, res) => {
+    getCommentByCrowdfundId(req, res);
+}
+);
 export default router;

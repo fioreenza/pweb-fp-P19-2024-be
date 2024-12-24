@@ -19,6 +19,21 @@ export const createFavoriteService = async (user_id: string, crowdfund_id: strin
   }
 };
 
+// removeFavoriteService function to remove favorite by user_id and crowdfund_id
+export const removeFavoriteService = async (user_id: string, crowdfund_id: string) => {
+  try {
+    // Find and remove the favorite
+    const favorite = await Favorite.findOneAndDelete({ user_id, crowdfund_id });
+    if (!favorite) {
+      return { success: false, message: 'Favorite not found' };
+    }
+    return { success: true, message: 'Favorite removed', data: favorite };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: 'Failed to remove favorite' };
+  }
+};
+
 export const getFavoriteByUserIdService = async (user_id: string) => {
   try {
     // Fetch all favorite crowdfunds for the given user_id

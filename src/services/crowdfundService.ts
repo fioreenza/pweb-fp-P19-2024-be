@@ -1,6 +1,7 @@
 import Crowdfund, { CrowdfundStatus } from '../models/Crowdfund';
 
 interface CreateCrowdfundInput {
+  description: any;
   name: string;
   target: number;
 }
@@ -22,6 +23,7 @@ export const createCrowdfundService = async (data: CreateCrowdfundInput) => {
       name: data.name,
       target: data.target,
       current_donation: 0,
+      description: data.description,
       status: CrowdfundStatus.OPEN,
     });
 

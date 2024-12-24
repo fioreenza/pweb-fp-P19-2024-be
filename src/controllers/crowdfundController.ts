@@ -14,7 +14,7 @@ export const getAllCrowdfunds = async (req: Request, res: Response) => {
 // Create a New Crowdfund
 export const createCrowdfund = async (req: Request, res: Response) => {
   try {
-    const { name, target } = req.body;
+    const { name, target, description } = req.body;
 
     // Validasi input
     if (!name || typeof name !== 'string') {
@@ -26,7 +26,7 @@ export const createCrowdfund = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: 'Target is required and must be a number greater than 0' });
     }
 
-    const result = await createCrowdfundService({ name, target });
+    const result = await createCrowdfundService({ name, target, description });
     res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ success: false, message: (error as any).message });
